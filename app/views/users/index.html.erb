@@ -1,0 +1,60 @@
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">High Scores</div>
+  <div class="panel-body">
+
+    <div class="image-container">
+      <%= image_tag 'back_of_cards/b2fv.png', class:  "pure-img-responsive-1" %>
+      <%= image_tag 'back_of_cards/joker.png', class:  "pure-img-responsive-2"%>
+    </div>
+
+    <div class="panel-heading">See if you can beat your friends!</div>
+
+  </div>
+
+  <!-- Table -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>User name</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Email</th>
+        <th>Wins</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @users.sort_by(&:wins).reverse.each do |user| %>
+        <tr>
+          <td><%= user.user_name %></td>
+          <td><%= user.first_name %></td>
+          <td><%= user.last_name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.wins %></td>
+          <td><%= link_to 'Show', user %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<style>
+.panel-default {
+  padding-top: 20px;
+  margin-top: 20px;
+  margin: 0 auto;
+  width: 800px;
+}
+.panel-heading{
+  text-align: center;
+}
+
+.image-container{
+    text-align: center;
+}
+
+
+
+</style>

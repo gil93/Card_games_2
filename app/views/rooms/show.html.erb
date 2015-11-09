@@ -1,0 +1,275 @@
+<div id="game-container">
+
+<h1><%= @room.name.capitalize %> Game</h1>
+
+<div id="users">
+</div>
+
+<div id="chat-style">
+</div>
+
+<div id="messages">
+  <h3>Chat!</h3>
+</div>
+
+<%= form_for Message.new, remote: true do |f| %>
+  <h4>Chat! :)</h4>
+  <div id="new_message_text">
+    <%= f.text_field :content %><br>
+  </div>
+    <%= f.hidden_field :user_id, value: current_user.id %>
+    <%= f.hidden_field :room_id, value: current_user.room.id %>
+  <div class="actions">
+    <%= f.submit "Send" %>
+  </div>
+<% end %>
+
+<div id="notice">
+</div>
+
+
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container">
+    <div id="buttons">
+    </div>
+  </div>
+</nav>
+
+
+</div>
+
+<%= subscribe_to room_path %>
+
+<style>
+
+  #buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  #buttons div {
+    margin: 5px;
+    padding: 5px;
+  }
+
+  #users {
+    max-width: 500px;
+  }
+  #game-container {
+    /*background: #E84F75 no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;*/
+    padding: 40px;
+    color: white;
+    margin-bottom: 0;
+  }
+
+  #game-container h1 {
+    text-align: center;
+    background-color: rgba(45, 99, 214, 0.2);
+    padding: 20px;
+    border-radius: 5px;
+    color: white;
+  }
+
+  #messages{
+    position: fixed;
+    right: 1em;
+    top: 8em;
+    word-wrap: break-word;
+    width: 200px;
+    border-style: none;
+    border-radius: 10px;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAaUlEQVQIW2MUSHP/z/ztEMNfLg+GPx+3MAjwczMwypaK/n//6AOYAwIvXn5nYGTxZ//PoCjFwPH8CcOPH0wMIDYjTzjr/x+SMgw839QYvnDdAtOMAmmB/5m/7WD4+Pkfg7CaGcPPj1wMAFY6I/ye5jZdAAAAAElFTkSuQmCC);
+    height: 300px;
+    overflow-y: auto;
+  }
+
+  .new_message{
+    padding: 10px;
+    position: fixed;
+    right: 2em;
+    bottom: 5em;
+    text-align: center;
+    border-style: none;
+    border-radius: 10px;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAaUlEQVQIW2MUSHP/z/ztEMNfLg+GPx+3MAjwczMwypaK/n//6AOYAwIvXn5nYGTxZ//PoCjFwPH8CcOPH0wMIDYjTzjr/x+SMgw839QYvnDdAtOMAmmB/5m/7WD4+Pkfg7CaGcPPj1wMAFY6I/ye5jZdAAAAAElFTkSuQmCC);
+  }
+
+  .new_message input{
+    color: black;
+  }
+
+  #messages h3{
+    padding: 10px;
+    text-align: center;
+    color: white;
+  }
+
+  #messages li{
+    margin-bottom: 5px;
+    padding: 10px;
+    border-style: none;
+    border-radius: 10px;
+    background: white;
+    color: black;
+  }
+
+  #chat-style{
+    position: fixed;
+    width: 226px;
+    height: 800px;
+    top: 0.1em;
+    right: 0.1em;
+    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAaUlEQVQIW2MUSHP/z/ztEMNfLg+GPx+3MAjwczMwypaK/n//6AOYAwIvXn5nYGTxZ//PoCjFwPH8CcOPH0wMIDYjTzjr/x+SMgw839QYvnDdAtOMAmmB/5m/7WD4+Pkfg7CaGcPPj1wMAFY6I/ye5jZdAAAAAElFTkSuQmCC);
+    margin-bottom: 0;
+  }
+
+  #buttons{
+    color: black;
+  }
+</style>
+
+<script>
+
+  $(function(){
+
+    $.ajax({
+      url: "<%= room_path %>",
+      dataType: "json",
+      type: "GET",
+      data: { ping: "true" },
+
+      }).done(function(data){
+        $("#buttons").html('');
+        if (data.user.stay == false && data.user.bust == false && data.user.win == false){
+          $("#buttons").append("<button type='button' id='hit'>HIT</button><button type='button' id='stay'>STAY</button>");
+        }
+        $("#buttons").append("<div id='gameover'><button type='button' id='restart'>RESTART</button></div>");
+        $("#" + data.user.user_name).append("<h4>You are here!</h4>");
+      });
+
+    $("#buttons").on("click", "#hit", function(){
+      $.ajax({
+        url: "<%= room_path %>",
+        dataType: "json",
+        type: "GET",
+        data: { ping: "true", hit: "true"}
+      }).done(function(data){
+        $("#buttons").html('');
+        if (data.user.stay == false && data.user.bust == false && data.user.win == false){
+          $("#buttons").append("<button type='button' id='hit'>HIT</button><button type='button' id='stay'>STAY</button>");
+        }
+        $("#buttons").append("<div id='gameover'><button type='button' id='restart'>RESTART</button></div>");
+        $("#" + data.user.user_name).append("<h4>You are here!</h4>");
+      });
+    });
+
+    $("#buttons").on("click", "#stay", function(){
+      $.ajax({
+        url: "<%= room_path %>",
+        dataType: "json",
+        type: "GET",
+        data: { ping: "true", stay: "true"}
+      }).done(function(data){
+        $("#buttons").html('');
+        if (data.user.stay == false && data.user.bust == false && data.user.win == false){
+          $("#buttons").append("<button type='button' id='hit'>HIT</button><button type='button' id='stay'>STAY</button>");
+        }
+        $("#buttons").append("<div id='gameover'><button type='button' id='restart'>RESTART</button></div>");
+        $("#" + data.user.user_name).append("<h4>You are here!</h4>");
+      });
+    });
+
+    $("#buttons").on("click", "#restart", function(){
+      $.ajax({
+        url: "<%= room_path %>",
+        dataType: "json",
+        type: "GET",
+        data: { ping: "true", restart: "true"}
+      }).done(function(data){
+        $("#buttons").html('');
+        if (data.user.stay == false && data.user.bust == false && data.user.win == false){
+          $("#buttons").append("<button type='button' id='hit'>HIT</button><button type='button' id='stay'>STAY</button>");
+        }
+        $("#buttons").append("<div id='gameover'><button type='button' id='restart'>RESTART</button></div>");
+        $("#" + data.user.user_name).append("<h4>You are here!</h4>");
+      });
+    });
+
+    PrivatePub.subscribe("<%= room_path %>", function(data, channel) {
+
+      if (data.message != null){
+        $("#messages").append("<li>" + data.user.user_name + ": " + data.message.content + "</li>");
+        $("#message_content").val('');
+      }
+
+      if (data.message == null){
+        $("#notice").html('');
+        if ($("#gameinsession").length < 1){
+          $("#notice").append("<p id='gameinsession'>Notice: Game is currently in session. Dealer should restart the game if new players join in!</p>");
+        }
+        $("#users").html('');
+        $("#pleaserestart").html('');
+        $.each(data, function(index, users){
+          $.each(users, function(u, user){
+            if (user.user_name != undefined){
+              debugger;
+              if ($("#" + user.user_name).length < 1) {
+
+                $("#users").append("<div id='" + user.user_name + "'><div><h4>" + user.user_name + " is playing!" + "</h4></div></div>");
+
+                $("#" + user.user_name).append("<div>" + user.score + " in hand!</div>");
+
+                debugger;
+
+                if (user.win == true){
+                  $("#notice").append("<p id='pleaserestart'>The game is now over. You should restart!</p>");
+                  $("#" + user.user_name).append("<div>" + user.user_name + " has won the game!</div>");
+                }
+
+                if (user.bust == true){
+                  $("#" + user.user_name).append("<div>" + user.user_name + "\'s hand is a bust!</div>");
+                }
+
+                $.each(data.hands, function(h_id, hand){
+                  if (h_id == user.id){
+                    $.each(hand, function(c, card){
+                      $("#" + user.user_name).append("<div id='" + user.user_name + "_cards'></div>");
+                      $("#" + user.user_name + "_cards").append("<img src='/images/" + card.image + "'>");
+                      $("#" + user.user_name + "_cards").css({"text-align": "center"});
+                      $("#" + user.user_name).css({"width": "300px"});
+                      $("#" + user.user_name).css({"text-align": "center"});
+                      $("#users").css({"display": "flex"})
+                      $("#users").css({"flex-direction": "row"})
+                      $("#users").css({"margin-top": "40px"});
+                    });
+                  }
+                });
+
+                if (user.dealer == true){
+                  $("#" + user.user_name).append("<div><h2>Dealer</h2></div>");
+                }
+              }
+            }
+          });
+        });
+      };
+    });
+
+    $(window).bind('beforeunload', function(){
+      $.ajax({
+        url: "<%= room_path %>",
+        type: "GET",
+        data: { ping: "true", disconnect: "true" },
+        async: false
+      }).done(function(){
+      });
+    });
+  });
+
+</script>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>App</title>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <% if current_user %>
+            <li><p class="navbar-text">Signed in as: <%= current_user.email %></p></li>
+            <li><%= link_to "Home", root_url %></li>
+            <li><%= link_to "High Scores", users_path %></li>
+            <li><%= link_to "Join a Game", rooms_path %></li>
+            <li><%= link_to "Log out", logout_path, { method: "delete" } %></a></li>
+          <% else %>
+          <div="form-control">
+            <%= form_for :session, url: login_path, class: "navbar-form" do |f| %>
+              Email:<%= f.email_field :email, placeholder: "Email" %>
+              Password:<%= f.password_field :password, placeholder: "Password" %>
+              <%= f.submit "Log in", class: "btn btn-submit" %>
+            <% end %>
+            <%= link_to "Signup", signup_path %></a>
+            </div>
+          <% end %>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+<div id='page-content-wrapper'>
+  <div id='container'>
+    <%= yield %>
+  </div>
+</div>
+
+</body>
+</html>
+
+<style>
+
+
+
+.navbar-default{
+  position: fixed;
+  width: 100%;
+  z-index: 10000;
+  margin-bottom: 0;
+}
+
+#page-content-wrapper{
+  padding-top: 50px;
+}
+
+#page-content-wrapper,
+html {
+  background: #2c3e50 no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+</style>
